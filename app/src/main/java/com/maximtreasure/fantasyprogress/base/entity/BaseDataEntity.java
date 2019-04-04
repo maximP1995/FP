@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 
 public class BaseDataEntity implements Parcelable{
+    public int charType;//人物种类
+    public int charTypeLevel;//人物种类级别
     public long life;//人物寿命
 
     public BaseDataEntity(){}
@@ -35,6 +37,8 @@ public class BaseDataEntity implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(charType);
+        parcel.writeInt(charTypeLevel);
         parcel.writeLong(life);
     }
 }

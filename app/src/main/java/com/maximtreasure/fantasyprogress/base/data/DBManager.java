@@ -76,27 +76,10 @@ public class DBManager {
             baseData = bundle.getParcelable(ConstKey.KEY_BASE_DATA);
         }
         if (baseData!=null){
-//            ContentValues cv = new ContentValues();
-//            cv.put(CHAR_LIFE_TIME,baseData.life);
             db.execSQL("INSERT INTO "+TABLE_NAME+" ("+CHAR_LIFE_TIME+") VALUES("+baseData.life+")");
             db.close();
         }
-//        CircleRel circleRel = getCircleRel(circleId, userId);
-//        ContentValues cv = new ContentValues();
-//        cv.put(CircleRelTable.CIRCLE_ID, circleId);
-//        cv.put(CircleRelTable.MYUSERID, userId);
-//        cv.put(CircleRelTable.ROLE, role);
-//        if (circleRel != null) {//更新
-//            db.update(CircleRelTable.TABLENAME, cv, CircleRelTable.CIRCLE_ID + "=? and " + CircleRelTable.MYUSERID + "=?", new String[]{circleId, String.valueOf(userId)});
-//        } else {//插入
-//            db.insert(CircleRelTable.TABLENAME, null, cv);
-//        }
     }
-//    public BaseDataEntity getCircleRel(String circleNum, long userId) {
-//        SQLiteDatabase db = getDbOppType(true);
-//        Cursor cursor = db.query(TABLE_NAME, null, CircleRelTable.CIRCLE_ID + "=? and " + CircleRelTable.MYUSERID + "=?", new String[]{circleNum, String.valueOf(userId)}, null, null, null);
-//        return CircleRelTable.convertToCircleRel(cursor);
-//    }
     private static class DataBaseHelper extends SQLiteOpenHelper{
 
         public DataBaseHelper(Context context) {

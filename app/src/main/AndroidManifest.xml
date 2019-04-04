@@ -16,5 +16,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".room.PlayRoomActivity" />
+        <activity android:name=".room.CharacterInitActivity" />
     </application>
 </manifest>
