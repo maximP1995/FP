@@ -20,9 +20,14 @@ import com.maximtreasure.fantasyprogress.room.fragment.MainPerformanceFragment;
 public class PlayRoomActivity extends BaseActivity{
     private ViewPager viewPager;
     private PagerAdapter adapter;
+    private BaseDataEntity entity;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle!=null && bundle.containsKey(ConstKey.KEY_BASE_DATA)){
+            entity = bundle.getParcelable(ConstKey.KEY_BASE_DATA);
+        }
         setContentView(R.layout.activity_play_room);
         viewPager = (ViewPager) findViewById(R.id.vp_play);
         adapter = new PagerAdapter(getSupportFragmentManager());
@@ -36,8 +41,7 @@ public class PlayRoomActivity extends BaseActivity{
 
         }
     }
-    private BaseDataEntity loadDataFromDB(){
-        BaseDataEntity entity = null;
+    public BaseDataEntity getBaseDataEntity(){
         return entity;
     }
     private class PagerAdapter extends FragmentPagerAdapter{

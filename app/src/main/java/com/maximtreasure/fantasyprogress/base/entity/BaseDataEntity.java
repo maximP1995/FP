@@ -11,6 +11,7 @@ public class BaseDataEntity implements Parcelable{
     public int charType;//人物种类
     public int charTypeLevel;//人物种类级别
     public long life;//人物寿命
+    public String typeName;//物种名称
 
     public BaseDataEntity(){}
 
@@ -40,5 +41,6 @@ public class BaseDataEntity implements Parcelable{
         parcel.writeInt(charType);
         parcel.writeInt(charTypeLevel);
         parcel.writeLong(life);
+        parcel.writeString(typeName);
     }
 }

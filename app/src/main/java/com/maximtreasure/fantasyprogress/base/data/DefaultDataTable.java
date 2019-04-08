@@ -23,7 +23,12 @@ public class DefaultDataTable {
     private static final String CHAR_LIFE_TIME = "time_character_life";
     private static final String CHAR_TYPE = "char_type";
     private static final String CHAR_TYPE_LEVEL = "char_type_level";
-    private static final String CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+" ( "+CHAR_TYPE+" INTEGER DEFAULT 0 , "+CHAR_TYPE_LEVEL+" INTEGER , "+CHAR_LIFE_TIME+" LONG )";
+    private static final String CHAR_NAME = "char_name";
+    private static final String CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+" (" +
+            " "+CHAR_TYPE+" INTEGER DEFAULT 0 , "+
+            CHAR_TYPE_LEVEL+" INTEGER DEFAULT 0, "+
+            CHAR_LIFE_TIME+" LONG DEFAULT 0 ,"+
+            CHAR_NAME+" varchar(10))";
     private static int DATABASE_VERSION = 1;
     private DataBaseHelper mOpenHelper = null;
     private volatile static DefaultDataTable instance = null;
@@ -62,6 +67,7 @@ public class DefaultDataTable {
         }
         private void doCreateTable(SQLiteDatabase db){
             db.execSQL(CREATE_TABLE);
+            Log.d("120","db version == "+db.getVersion()+" db path == "+db.getPath());
             generateDefaultData(db);
         }
         public void generateDefaultData(SQLiteDatabase db) {
@@ -69,8 +75,8 @@ public class DefaultDataTable {
             contentValues.put(CHAR_TYPE, 1);
             contentValues.put(CHAR_TYPE_LEVEL, 1);
             contentValues.put(CHAR_LIFE_TIME, 28000);
+            contentValues.put(CHAR_NAME,"人类");
             db.insert(TABLE_NAME,null,contentValues);
-            db.close();
         }
     }
     public SQLiteDatabase getDbOppType(boolean writeable) {
@@ -84,13 +90,14 @@ public class DefaultDataTable {
         BaseDataEntity entity = null;
         try{
             SQLiteDatabase db = getDbOppType(true);
-            Cursor cursor = db.query(TABLE_NAME,null,CHAR_TYPE,new String[]{charType+""},null,null,null);
+//            Cursor cursor = db.query(TABLE_NAME,null,CHAR_TYPE,new String[]{charType+""},null,null,null);
+            Cursor cursor = db.query(TABLE_NAME,null,null,null,null,null,null);
             while (cursor.moveToNext()){
                     entity = new BaseDataEntity();
                     entity.life = cursor.getLong(cursor.getColumnIndex(CHAR_LIFE_TIME));
                     entity.charType = cursor.getInt(cursor.getColumnIndex(CHAR_TYPE));
                     entity.charTypeLevel = cursor.getInt(cursor.getColumnIndex(CHAR_TYPE_LEVEL));
-                    Log.d("120","get life == "+entity.life+" charType == "+entity.charType+" charTypeLevel == "+entity.charTypeLevel);
+                    entity.typeName = cursor.getString(cursor.getColumnIndex(CHAR_NAME));
             }
             cursor.close();
             db.close();

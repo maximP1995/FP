@@ -3,33 +3,34 @@ package com.maximtreasure.fantasyprogress.base.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.maximtreasure.fantasyprogress.base.ConstKey;
 import com.maximtreasure.fantasyprogress.base.entity.BaseDataEntity;
 
 /**
- * Created by zhengmj on 19-4-2.
+ * Created by Maxim on 19-4-2.
+ * 生成角色基础数据
  */
 
 public class DBManager {
-    private static final String TAG = DBManager.class.getSimpleName();
-    private static final String DATABASE_NAME = "fp.db";
-    private static final String TABLE_NAME = "base_data";
-    private static final String CHAR_LIFE_TIME = "time_character_life";
-    private static final String CREATE_TABLE = "CREATE TABLE "+TABLE_NAME+" ( "+CHAR_LIFE_TIME+" INTEGER DEFAULT 0 )";
-    private static int DATABASE_VERSION = 1;
-    private DataBaseHelper mOpenHelper = null;
+    private static final String TABLE_NAME = "base_data_table";
+    private static final String KEY_CHAR_TYPE = "key_char_type";
+    private static final String KEY_CHAR_TYPE_LEVEL = "key_char_type_level";
+    private static final String KEY_CHAR_LIFE = "key_char_life";
+    private static final String KEY_CHAR_TYPE_NAME = "key_char_type_name";
     private volatile static DBManager instance = null;
+    private SQLiteDBHelper dbHelper;
 
     private DBManager(Context context){
-        mOpenHelper = new DataBaseHelper(context);
+        dbHelper = new SQLiteDBHelper(context);
     }
-
     public static DBManager getInstance(Context context) {
         if (instance == null) {
             synchronized (DBManager.class) {
@@ -40,68 +41,80 @@ public class DBManager {
         }
         return instance;
     }
-
-    public SQLiteDatabase getDbOppType(boolean writeable) {
-        if (writeable) {
-            return mOpenHelper.getWritableDatabase();
-        } else {
-            return mOpenHelper.getReadableDatabase();
-        }
+    public String getTableName(){
+        return TABLE_NAME;
     }
-    public BaseDataEntity getBaseDataFromDb(){
+    public SQLiteDatabase getDatabase(){
+        return dbHelper.getWritableDatabase();
+    }
+    public BaseDataEntity queryBaseData(){
+        return queryData(null,null,null,null,null,null);
+    }
+    private BaseDataEntity queryData(String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy){
         BaseDataEntity entity = null;
-        try{
-            SQLiteDatabase db = getDbOppType(true);
-            Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
-            while (cursor.moveToNext()){
-                Log.d("120","cursor getLong == "+cursor.getLong(0));
-                Long life_time = cursor.getLong(0);
-                if (life_time!=null){
-                    entity = new BaseDataEntity();
-                    entity.life = life_time;
-                }
-            }
-            cursor.close();
-            db.close();
-        }catch (Exception e){
-
+        Cursor cursor = getDatabase().query(getTableName(),columns,selection,selectionArgs,groupBy,having,orderBy);
+        if (cursor.moveToNext()){
+            entity = new BaseDataEntity();
+            entity.typeName = cursor.getString(cursor.getColumnIndex(KEY_CHAR_TYPE_NAME));
+            entity.charType = cursor.getInt(cursor.getColumnIndex(KEY_CHAR_TYPE));
+            entity.charTypeLevel = cursor.getInt(cursor.getColumnIndex(KEY_CHAR_TYPE_LEVEL));
+            entity.life = cursor.getLong(cursor.getColumnIndex(KEY_CHAR_LIFE));
         }
         return entity;
     }
-    public void updateTable(@NonNull Bundle bundle) {
-        SQLiteDatabase db = getDbOppType(true);
-        //这里不能用replace 因为会把 recentTime 清掉
-        BaseDataEntity baseData = null;
-        if (bundle.containsKey(ConstKey.KEY_BASE_DATA)){
-            baseData = bundle.getParcelable(ConstKey.KEY_BASE_DATA);
-        }
-        if (baseData!=null){
-            db.execSQL("INSERT INTO "+TABLE_NAME+" ("+CHAR_LIFE_TIME+") VALUES("+baseData.life+")");
-            db.close();
+    public boolean deleteBaseData(int charType){
+        try {
+            getDatabase().delete(getTableName(),KEY_CHAR_TYPE+" = ?",new String[]{String.valueOf(charType)});
+            return true;
+        }catch (Exception e){
+            return false;
         }
     }
-    private static class DataBaseHelper extends SQLiteOpenHelper{
-
-        public DataBaseHelper(Context context) {
-            this(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private boolean insertData(@NonNull BaseDataEntity entity){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_CHAR_TYPE,entity.charType);
+        contentValues.put(KEY_CHAR_TYPE_LEVEL,entity.charTypeLevel);
+        contentValues.put(KEY_CHAR_TYPE_NAME,entity.typeName);
+        contentValues.put(KEY_CHAR_LIFE,entity.life);
+        try{
+            getDatabase().insert(getTableName(),null,contentValues);
+            return true;
+        }catch (Exception e){
+            return false;
         }
-
-        public DataBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    }
+    private class SQLiteDBHelper extends SQLiteOpenHelper{
+        private static final String DB_NAME = "fpdb.db";
+        private static final int DB_VERSION = 1;
+        private static final String CREATE_TABLE = "create table "+TABLE_NAME+" (" +
+                ""+KEY_CHAR_TYPE+" integer not null," +
+                ""+KEY_CHAR_TYPE_LEVEL+" integer not null," +
+                ""+KEY_CHAR_LIFE+" long default 0," +
+                ""+KEY_CHAR_TYPE_NAME+" varchar(12))";
+        public SQLiteDBHelper(Context context){
+            this(context,DB_NAME,null,DB_VERSION);
+        }
+        public SQLiteDBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
         }
 
-        @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            doCreateTable(sqLiteDatabase);
+        public SQLiteDBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version, @Nullable DatabaseErrorHandler errorHandler) {
+            super(context, name, factory, version, errorHandler);
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-        }
-        private void doCreateTable(SQLiteDatabase db){
+        public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_TABLE);
-            Log.d("120","create_table version == "+db.getVersion()+" path == "+db.getPath()+" pageSize == "+db.getPageSize());
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        }
+
+        @Override
+        public void onOpen(SQLiteDatabase db) {
+            super.onOpen(db);
         }
     }
 }

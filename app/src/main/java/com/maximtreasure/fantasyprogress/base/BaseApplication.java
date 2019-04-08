@@ -18,7 +18,6 @@ public class BaseApplication extends Application {
     }
     private void getBaseDataFromDB(){
         DBManager dbManager = DBManager.getInstance(this);
-        BaseDataEntity entity = dbManager.getBaseDataFromDb();
-        hasSave = entity != null;
+
     }
 }
