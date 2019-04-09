@@ -11,7 +11,9 @@ import com.maximtreasure.fantasyprogress.R;
 import com.maximtreasure.fantasyprogress.base.BaseActivity;
 import com.maximtreasure.fantasyprogress.base.ConstKey;
 import com.maximtreasure.fantasyprogress.base.entity.BaseDataEntity;
-import com.maximtreasure.fantasyprogress.room.fragment.MainPerformanceFragment;
+import com.maximtreasure.fantasyprogress.room.fragment.CharacterInfoFragment;
+import com.maximtreasure.fantasyprogress.room.fragment.RelationshipInfoFragment;
+import com.maximtreasure.fantasyprogress.room.fragment.SkillInfoFragment;
 
 /**
  * Created by zhengmj on 19-4-2.
@@ -33,14 +35,6 @@ public class PlayRoomActivity extends BaseActivity{
         adapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
     }
-    private void updateDataToFragment(Bundle bundle){
-        try{
-            MainPerformanceFragment fragment = (MainPerformanceFragment) adapter.instantiateItem(viewPager,0);
-            fragment.updateFromActivity(bundle);
-        }catch (ClassCastException e){
-
-        }
-    }
     public BaseDataEntity getBaseDataEntity(){
         return entity;
     }
@@ -52,12 +46,12 @@ public class PlayRoomActivity extends BaseActivity{
 
         @Override
         public Fragment getItem(int position) {
-            return MainPerformanceFragment.newInstance();
+            return position == 0 ?CharacterInfoFragment.newInstance():position == 1? SkillInfoFragment.newInstance(): RelationshipInfoFragment.newInstance();
         }
 
         @Override
         public int getCount() {
-            return 1;
+            return 3;
         }
     }
 }

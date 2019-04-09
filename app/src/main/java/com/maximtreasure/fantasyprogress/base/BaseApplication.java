@@ -10,14 +10,9 @@ import com.maximtreasure.fantasyprogress.base.entity.BaseDataEntity;
  */
 
 public class BaseApplication extends Application {
-    public static boolean hasSave;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        getBaseDataFromDB();
-    }
-    private void getBaseDataFromDB(){
-        DBManager dbManager = DBManager.getInstance(this);
-
     }
 }

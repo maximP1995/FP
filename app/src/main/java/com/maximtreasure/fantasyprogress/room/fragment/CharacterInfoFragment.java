@@ -16,11 +16,11 @@ import com.maximtreasure.fantasyprogress.room.PlayRoomActivity;
  * Created by zhengmj on 19-4-2.
  */
 
-public class MainPerformanceFragment extends Fragment{
+public class CharacterInfoFragment extends Fragment{
     private TextView tv_game_life;
     private BaseDataEntity entity;
-    public static MainPerformanceFragment newInstance(){
-        MainPerformanceFragment fragment = new MainPerformanceFragment();
+    public static CharacterInfoFragment newInstance(){
+        CharacterInfoFragment fragment = new CharacterInfoFragment();
         return fragment;
     }
     @Nullable

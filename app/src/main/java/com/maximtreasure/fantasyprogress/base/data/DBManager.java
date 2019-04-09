@@ -21,6 +21,7 @@ import com.maximtreasure.fantasyprogress.base.entity.BaseDataEntity;
 
 public class DBManager {
     private static final String TABLE_NAME = "base_data_table";
+    public static final String KEY_BASE_ID = "key_base_id";
     private static final String KEY_CHAR_TYPE = "key_char_type";
     private static final String KEY_CHAR_TYPE_LEVEL = "key_char_type_level";
     private static final String KEY_CHAR_LIFE = "key_char_life";
@@ -48,7 +49,7 @@ public class DBManager {
         return dbHelper.getWritableDatabase();
     }
     public BaseDataEntity queryBaseData(){
-        return queryData(null,null,null,null,null,null);
+        return queryData(null,KEY_BASE_ID+" = ?",new String[]{String.valueOf(1)},null,null,null);
     }
     private BaseDataEntity queryData(String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy){
         BaseDataEntity entity = null;
@@ -70,14 +71,28 @@ public class DBManager {
             return false;
         }
     }
-    private boolean insertData(@NonNull BaseDataEntity entity){
+    public boolean insertData(@NonNull BaseDataEntity entity){
         ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_BASE_ID,1);
         contentValues.put(KEY_CHAR_TYPE,entity.charType);
         contentValues.put(KEY_CHAR_TYPE_LEVEL,entity.charTypeLevel);
         contentValues.put(KEY_CHAR_TYPE_NAME,entity.typeName);
         contentValues.put(KEY_CHAR_LIFE,entity.life);
         try{
             getDatabase().insert(getTableName(),null,contentValues);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+    public boolean updateData(@NonNull BaseDataEntity entity){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_CHAR_TYPE,entity.charType);
+        contentValues.put(KEY_CHAR_TYPE_LEVEL,entity.charTypeLevel);
+        contentValues.put(KEY_CHAR_TYPE_NAME,entity.typeName);
+        contentValues.put(KEY_CHAR_LIFE,entity.life);
+        try{
+            getDatabase().update(getTableName(),contentValues,KEY_BASE_ID+" = ?",new String[]{"1"});
             return true;
         }catch (Exception e){
             return false;
@@ -90,7 +105,8 @@ public class DBManager {
                 ""+KEY_CHAR_TYPE+" integer not null," +
                 ""+KEY_CHAR_TYPE_LEVEL+" integer not null," +
                 ""+KEY_CHAR_LIFE+" long default 0," +
-                ""+KEY_CHAR_TYPE_NAME+" varchar(12))";
+                ""+KEY_CHAR_TYPE_NAME+" varchar(12)" +
+                ""+KEY_BASE_ID+" integer primary key)";
         public SQLiteDBHelper(Context context){
             this(context,DB_NAME,null,DB_VERSION);
         }
