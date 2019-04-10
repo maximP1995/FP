@@ -4,6 +4,10 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <com.maximtreasure.fantasyprogress.view.SkillProgress
+        android:id="@+id/id_test"
+        android:layout_width="300dp"
+        android:layout_height="300dp" />
     <TextView
         android:textSize="20sp"
         android:textColor="#232323"
