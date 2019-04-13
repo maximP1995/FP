@@ -2,9 +2,6 @@ package com.maximtreasure.fantasyprogress.base;
 
 import android.app.Application;
 
-import com.maximtreasure.fantasyprogress.base.data.DBManager;
-import com.maximtreasure.fantasyprogress.base.entity.BaseDataEntity;
-
 /**
  * Created by zhengmj on 19-4-2.
  */

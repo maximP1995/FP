@@ -1,15 +1,17 @@
-package com.maximtreasure.fantasyprogress.base.data;
+package com.maximtreasure.fantasyprogress.base.data.skill;
 
 import android.content.Context;
 import android.database.Cursor;
 
-import com.maximtreasure.fantasyprogress.base.entity.SkillGrowEntity;
+import com.maximtreasure.fantasyprogress.base.data.BaseDB;
+import com.maximtreasure.fantasyprogress.base.data.skill.entity.SkillGrowEntity;
 
 /**
- * Created by zhengmj on 19-4-11.
+ * Created by maxim on 19-4-11.
+ * 获取技能成长值
  */
 
-public class SkillGrowDB extends BaseDB {
+public class SkillGrowDB extends SkillDB {
     private final static String TABLE_NAME = "skill_grow_table";
     private final static String SKILL_ID = "skill_id";
     private final static String SKILL_EXPERIENCE_COEFFICIENT = "skill_experience_coefficient";//基础成长系数
@@ -18,13 +20,22 @@ public class SkillGrowDB extends BaseDB {
     public SkillGrowDB(Context context) {
         super(context);
         createTable(CREATE_TABLE);
+        setTableName(TABLE_NAME);
     }
     public String getTableName(){
         return TABLE_NAME;
     }
-    public SkillGrowEntity getValueByID(int id){
+
+    public SkillGrowEntity queryBySkillId(long id){
+        setSelection(SKILL_ID);
+        setSelectionArgs(new String[]{String.valueOf(id)});
+        return query();
+    }
+
+    @Override
+    public SkillGrowEntity query() {
         SkillGrowEntity entity = null;
-        Cursor cursor = getDB().query(getTableName(),null,SKILL_ID+" = ?",new String[]{String.valueOf(id)},null,null,null);
+        Cursor cursor = sqlQuery();
         if (cursor.moveToNext()){
             entity = new SkillGrowEntity();
             entity.skill_experience_coefficient= cursor.getLong(cursor.getColumnIndex(SKILL_EXPERIENCE_COEFFICIENT));
@@ -32,5 +43,4 @@ public class SkillGrowDB extends BaseDB {
         }
         return entity;
     }
-
 }

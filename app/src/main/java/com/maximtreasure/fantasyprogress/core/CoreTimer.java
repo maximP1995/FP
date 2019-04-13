@@ -2,11 +2,9 @@ package com.maximtreasure.fantasyprogress.core;
 
 import android.util.Log;
 
-import com.maximtreasure.fantasyprogress.base.data.DBManager;
 import com.maximtreasure.fantasyprogress.core.interfaces.TimeNotifiable;
 
 import java.util.Date;
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**

@@ -2,7 +2,6 @@ package com.maximtreasure.fantasyprogress.base;
 
 import android.content.Context;
 
-import com.maximtreasure.fantasyprogress.base.data.DBManager;
 import com.maximtreasure.fantasyprogress.base.data.DefaultDataTable;
 import com.maximtreasure.fantasyprogress.base.entity.BaseDataEntity;
 

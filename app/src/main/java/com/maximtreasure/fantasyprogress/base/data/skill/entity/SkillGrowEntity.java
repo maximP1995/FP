@@ -1,4 +1,4 @@
-package com.maximtreasure.fantasyprogress.base.entity;
+package com.maximtreasure.fantasyprogress.base.data.skill.entity;
 
 /**
  * Created by zhengmj on 19-4-11.
