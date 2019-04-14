@@ -82,7 +82,7 @@ public abstract class BaseDB {
     private String orderBy = null;
     private SQLiteDBHelper helper;
     public BaseDB(Context context){
-        helper = new SQLiteDBHelper(context);
+        helper = new SQLiteDBHelper(context.getApplicationContext());
     }
     protected SQLiteDatabase getDB(){
         return helper.getWritableDatabase();
